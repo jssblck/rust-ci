@@ -39,7 +39,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          ${{ env.IMAGE_NAME }}:${{ needs.tag.outputs.version }}
-          ${{ env.IMAGE_NAME }}:latest
+          ghcr.io/${{ env.IMAGE_NAME }}:${{ needs.tag.outputs.version }}
+          ghcr.io/${{ env.IMAGE_NAME }}:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
