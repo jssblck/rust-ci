@@ -39,7 +39,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          $IMAGE_NAME:${{ needs.tag.outputs.version }}
-          $IMAGE_NAME:latest
+          ${{ env.IMAGE_NAME }}:${{ needs.tag.outputs.version }}
+          ${{ env.IMAGE_NAME }}:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
