@@ -1,0 +1,44 @@
+name: Build and push
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+env:
+  IMAGE_NAME: jssblck/rust-ci
+
+jobs:
+  tag:
+    name: Tag
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+
+    steps:
+    - name: Determine tagged version
+      id: tag
+      run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\/v/}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: tag
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image tagged
+        run: docker build . --tag $IMAGE_NAME:${{ needs.tag.outputs.version }}
+
+  dockerhub:
+    name: Dockerhub
+    needs:
+    - tag
+    - build
+
+    steps:
+      - name: Login
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u jssblck --password-stdin
+      - name: Push
+        run: docker push $IMAGE_NAME:${{ needs.tag.outputs.version }}
